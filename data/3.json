@@ -1,0 +1,228 @@
+{
+  "lecture": {
+    "title": "Introduction to Embedded Systems and AVR Microcontrollers",
+    "body": "<h2>Introduction</h2><p>This lecture introduces the concept of Embedded Systems, differentiates them from general-purpose computers, explores the core components of microcontrollers (MCUs) with a focus on the AVR architecture, and delves into how I/O ports are controlled using specific registers.</p><h3>I. What are Embedded Systems?</h3><p>An embedded system is a combination of computer hardware and software designed for a specific function or functions within a larger system. Unlike general-purpose computers (like PCs), they are typically designed to perform dedicated tasks.</p><span class=\"arabic-explanation-text\">النظام المضمن (Embedded System): هو نظام حاسوبي مخصص لأداء وظيفة محددة، يتكون من عتاد (hardware) وبرمجيات (software) مدمجة معًا.</span><h4>Common Characteristics:</h4><ul><li><strong>Single-functioned:</strong> Often dedicated to performing one specific task repeatedly.</li><li><strong>Tightly Constrained:</strong> Designed with limitations on resources like cost, power consumption, size, and memory. Efficiency is key.</li><li><strong>Reactive and Real-Time:</strong> Frequently need to respond to events in the environment (inputs) within specific time constraints (real-time).</li><li><strong>Dependability:</strong> Often required to be reliable and stable over long periods.</li></ul><h3>II. Microprocessors (MPU) vs. Microcontrollers (MCU) Revisited</h3><p>Understanding the difference is crucial for embedded systems:</p><ul><li><strong>Microprocessor (MPU):</strong> Essentially a CPU on a chip. It requires external components like RAM, ROM, and I/O peripherals to function as a complete computer system. Used in general-purpose computing (PCs, laptops).</li><li><strong>Microcontroller (MCU):</strong> A 'computer on a chip'. It integrates the CPU core, memory (RAM, ROM/Flash), and various I/O peripherals (like timers, ADC, serial ports) onto a single integrated circuit. Ideal for embedded applications due to integration, lower cost, and often lower power consumption.</li></ul><span class=\"arabic-explanation-text\">الفرق الرئيسي: المتحكم الدقيق (MCU) يدمج المعالج والذاكرة والملحقات على شريحة واحدة، بينما المعالج الدقيق (MPU) هو المعالج فقط ويحتاج لمكونات خارجية.</span><div class=\"overflow-x-auto table-wrapper\"><table class=\"w-full\"><thead><tr><th>Feature</th><th>Microprocessor (MPU)</th><th>Microcontroller (MCU)</th></tr></thead><tbody><tr><td>Integration</td><td>CPU only; Needs external RAM, ROM, I/O</td><td>CPU, RAM, ROM, I/O, Peripherals on one chip</td></tr><tr><td>Purpose</td><td>General-purpose computing</td><td>Specific, dedicated tasks (Embedded)</td></tr><tr><td>Cost</td><td>System cost is higher</td><td>System cost is lower</td></tr><tr><td>Speed</td><td>Generally Faster (GHz range)</td><td>Sufficient for task (MHz range)</td></tr><tr><td>Power</td><td>Higher consumption</td><td>Lower consumption, power-saving modes</td></tr><tr><td>Resources</td><td>External resources seem 'unlimited'</td><td>Internal resources are limited</td></tr></tbody></table></div><h3>III. Microcontroller Building Blocks</h3><p>A typical MCU integrates several key components:</p><ul><li><strong>Processor Core (CPU):</strong> Executes program instructions (performs arithmetic, logic, control).</li><li><strong>Memory:</strong><ul><li><strong>Program Memory (ROM, Flash, EEPROM):</strong> Non-volatile memory storing the application code.</li><li><strong>Data Memory (RAM, SRAM):</strong> Volatile memory for temporary data storage during execution.</li><li><strong>Registers:</strong> Small, fast internal CPU storage.</li></ul></li><li><strong>I/O Ports:</strong> Pins grouped into ports (e.g., Port A, Port B) for digital input and output, allowing interaction with the external world (sensors, actuators, LEDs, buttons).</li><li><strong>Buses:</strong> Internal pathways (Data Bus, Address Bus, Control Bus) connecting CPU, memory, and peripherals.</li><li><strong>Peripherals:</strong><ul><li><strong>Timers/Counters:</strong> For timing events, generating delays, or creating PWM signals.</li><li><strong>Analog-to-Digital Converter (ADC):</strong> Converts analog input signals (e.g., from sensors) to digital values.</li><li><strong>Digital-to-Analog Converter (DAC):</strong> Converts digital values to analog output signals.</li><li><strong>Communication Interfaces:</strong> UART (Serial), SPI, I2C for communicating with other devices.</li><li><strong>Interrupt Controller:</strong> Manages external or internal interrupt requests.</li><li><strong>Oscillator Circuitry:</strong> Generates the clock signal that synchronizes the MCU operations.</li></ul></li></ul><span class=\"arabic-explanation-text\">مكونات المتحكم الدقيق (MCU): تشمل وحدة المعالجة المركزية (CPU)، الذاكرة (RAM/ROM)، منافذ الإدخال/الإخراج (I/O Ports)، الناقلات (Buses)، والملحقات الطرفية (Timers, ADC, Serial Comm).</span><h4>CPU Architectures: RISC vs CISC</h4><ul><li><strong>CISC (Complex Instruction Set Computer):</strong> Uses a large set of complex instructions, some of which may take multiple clock cycles to execute. Aims to accomplish tasks in fewer lines of assembly code. (e.g., x86 processors in PCs).</li><li><strong>RISC (Reduced Instruction Set Computer):</strong> Uses a smaller, highly optimized set of simple instructions. Most instructions execute in a single clock cycle, leading to potentially faster overall throughput for specific tasks. Aims for simplicity and speed. (e.g., ARM, AVR). Many MCUs use RISC architectures.</li></ul><span class=\"arabic-explanation-text\">معماريات المعالج: RISC (مجموعة تعليمات مختزلة) تتميز بتعليمات بسيطة وسريعة (غالبًا دورة ساعة واحدة). CISC (مجموعة تعليمات معقدة) تستخدم تعليمات أكثر تعقيدًا قد تستغرق دورات متعددة.</span><h3>IV. Introduction to AVR Microcontrollers</h3><p>AVR is a popular family of RISC microcontrollers developed by Atmel (now part of Microchip). They are known for their ease of use and are found in many Arduino boards.</p><h4>ATmega16 Example Features:</h4><ul><li>8-bit RISC CPU (Harvard architecture)</li><li>16KB Flash Program Memory</li><li>1KB SRAM Data Memory</li><li>512 Bytes EEPROM Data Memory</li><li>Multiple Timers (8-bit, 16-bit) with PWM capability</li><li>10-bit ADC (8 channels)</li><li>Communication: UART, SPI, I2C</li><li>32 General Purpose I/O Pins (grouped into Ports A, B, C, D)</li></ul><h3>V. AVR I/O Port Programming</h3><p>Controlling the input/output pins is fundamental. Each port (e.g., PORTA, PORTB) typically has three associated 8-bit registers:</p><ol><li><strong>DDRx (Data Direction Register):</strong> Configures each pin of port 'x' as either an Input or an Output.<ul><li>Setting a bit to <code>1</code> makes the corresponding pin an Output.</li><li>Setting a bit to <code>0</code> makes the corresponding pin an Input.</li></ul><pre><code>// Example: Set all pins of Port A as output\nDDRA = 0xFF; // 0b11111111\n\n// Example: Set lower 4 pins of Port B as input, upper 4 as output\nDDRB = 0xF0; // 0b11110000</code></pre></li><li><strong>PORTx (Port Data Register):</strong> Has dual functions depending on the DDRx setting.<ul><li>If pin is Output (DDRx.n = 1): Writing a <code>1</code> to PORTx.n drives the pin High (+VCC). Writing a <code>0</code> drives the pin Low (GND).</li><li>If pin is Input (DDRx.n = 0): Writing a <code>1</code> to PORTx.n enables the internal pull-up resistor for that pin. Writing a <code>0</code> disables the pull-up (making the pin high-impedance or 'tri-stated').</li></ul><pre><code>// Example: Drive PA0 High (assuming PA0 is output)\nPORTA |= (1 << 0); // Set bit 0 of PORTA\n\n// Example: Drive PA1 Low (assuming PA1 is output)\nPORTA &= ~(1 << 1); // Clear bit 1 of PORTA\n\n// Example: Enable pull-up on PB0 (assuming PB0 is input)\nDDRB &= ~(1 << 0); // Ensure PB0 is input\nPORTB |= (1 << 0); // Enable pull-up</code></pre></li><li><strong>PINx (Port Input Pins Register):</strong> Used to read the logical state (High/1 or Low/0) of the pins of port 'x', regardless of whether they are configured as input or output. This is a read-only register.</li><pre><code>// Example: Read the state of all pins of Port C\nunsigned char portC_Value;\nDDRC = 0x00; // Set Port C as input (optional, depends on external circuit)\nportC_Value = PINC; // Read the register</code></pre></ol><span class=\"arabic-explanation-text\">سجلات منافذ AVR I/O: <ul><li>DDRx: يحدد اتجاه المنفذ (إدخال أو إخراج). 1=إخراج، 0=إدخال.</li><li>PORTx: للكتابة على المنفذ (في حالة الإخراج) أو لتفعيل/تعطيل مقاومة الرفع الداخلية (pull-up) (في حالة الإدخال).</li><li>PINx: للقراءة من المنفذ (قراءة حالة الأرجل).</li></ul></span><h4>Pull-up Resistors and Tri-state</h4><ul><li><strong>Tri-state:</strong> An input pin with the pull-up disabled (DDRx.n=0, PORTx.n=0) is 'floating' or high-impedance. Its state is undefined unless driven externally High or Low. Reading a floating pin can give unpredictable results.</li><li><strong>Pull-up Resistor:</strong> An internal (or external) resistor connected between the input pin and VCC (+5V). When enabled (DDRx.n=0, PORTx.n=1) and nothing external is driving the pin Low, the pull-up resistor ensures the pin reads as High (1). This is useful for inputs like buttons connected to Ground.</li></ul><h3>VI. Interfacing with Sensors (Examples)</h3><p>MCUs use their I/O ports and peripherals (like ADC) to interface with sensors:</p><ul><li><strong>Ultrasonic Sensor (HC-SR04):</strong> Uses digital output (Trigger) and digital input (Echo) pins to measure distance based on time-of-flight of sound waves.</li><li><strong>PIR Motion Sensor (HC-SR501):</strong> Typically provides a digital output signal (High/Low) to a digital input pin on the MCU indicating motion detection.</li><li><strong>Soil Moisture Sensor:</strong> Can be resistive or capacitive. Often provides an analog output voltage proportional to moisture, read by the MCU's ADC. Some have a digital output based on a threshold.</li><li><strong>Temperature Sensor (DS18B20):</strong> Uses a digital communication protocol (1-Wire) requiring a single digital I/O pin.</li><li><strong>Temp/Humidity Sensor (DHT11/DHT22):</strong> Uses a specific digital communication protocol on a single digital I/O pin.</li><li><strong>Gas Sensor (MQ series):</strong> Often provides an analog output voltage proportional to gas concentration (read by ADC) and sometimes a digital output indicating if a threshold is exceeded.</li></ul>"
+  },
+  "quiz": [
+    {
+      "question": "What is the primary definition of an Embedded System?",
+      "options": [
+        "A general-purpose computer like a laptop",
+        "A computer system designed for a specific, dedicated function",
+        "A collection of external peripherals",
+        "Software used for web Browse"
+      ],
+      "correctAnswer": "A computer system designed for a specific, dedicated function",
+      "explanation": "النظام المضمن مصمم خصيصًا لأداء وظيفة أو مجموعة وظائف محددة داخل نظام أكبر."
+    },
+    {
+      "question": "Which is a common characteristic of embedded systems?",
+      "options": [
+        "Requires large amounts of external memory",
+        "Runs multiple user applications simultaneously",
+        "Designed for low cost, low power, and dedicated tasks",
+        "Always connected to a large display"
+      ],
+      "correctAnswer": "Designed for low cost, low power, and dedicated tasks",
+      "explanation": "غالبًا ما تكون الأنظمة المضمنة مقيدة بموارد محدودة مثل التكلفة والطاقة والحجم، ومخصصة لوظيفة واحدة."
+    },
+    {
+      "question": "What distinguishes a microcontroller (MCU) from a microprocessor (MPU)?",
+      "options": [
+        "MCUs are always faster than MPUs",
+        "MCUs integrate CPU, memory, and peripherals on a single chip",
+        "MPUs contain integrated RAM and ROM",
+        "MCUs require external I/O controllers"
+      ],
+      "correctAnswer": "MCUs integrate CPU, memory, and peripherals on a single chip",
+      "explanation": "الميزة الرئيسية للمتحكم الدقيق (MCU) هي دمج وحدة المعالجة المركزية (CPU) والذاكرة (RAM/ROM) والملحقات الطرفية (Peripherals) على شريحة واحدة."
+    },
+    {
+      "question": "Which component is typically *external* to a microprocessor (MPU) chip?",
+      "options": [
+        "CPU Core",
+        "ALU (Arithmetic Logic Unit)",
+        "RAM (Data Memory)",
+        "Registers"
+      ],
+      "correctAnswer": "RAM (Data Memory)",
+      "explanation": "المعالج الدقيق (MPU) هو في الأساس وحدة معالجة مركزية ويحتاج إلى ذاكرة RAM و ROM وملحقات I/O كرقائق خارجية."
+    },
+    {
+      "question": "Which component is commonly found integrated *within* a microcontroller (MCU)?",
+      "options": [
+        "Hard Disk Drive",
+        "Graphics Processing Unit (GPU)",
+        "Analog-to-Digital Converter (ADC)",
+        "External USB Hub"
+      ],
+      "correctAnswer": "Analog-to-Digital Converter (ADC)",
+      "explanation": "المتحكمات الدقيقة غالبًا ما تحتوي على ملحقات مدمجة مثل محولات ADC و DAC ومؤقتات ومنافذ اتصال تسلسلي."
+    },
+    {
+      "question": "What does the 'Real-time' characteristic of embedded systems imply?",
+      "options": [
+        "The system operates very quickly",
+        "The system uses a real-time operating system (RTOS)",
+        "The system must respond to events within specific time deadlines",
+        "The system displays the current time"
+      ],
+      "correctAnswer": "The system must respond to events within specific time deadlines",
+      "explanation": "الأنظمة المضمنة العاملة في الوقت الحقيقي يجب أن تكمل مهامها أو تستجيب للأحداث ضمن قيود زمنية محددة ومضمونة."
+    },
+    {
+      "question": "What does RISC stand for in processor architecture?",
+      "options": [
+        "Rapid Instruction Set Computer",
+        "Reduced Instruction Set Computer",
+        "Robust Instruction Set Computer",
+        "Real-time Instruction Set Computer"
+      ],
+      "correctAnswer": "Reduced Instruction Set Computer",
+      "explanation": "RISC هو اختصار لـ Reduced Instruction Set Computer، وهي معمارية معالج تستخدم مجموعة تعليمات أصغر وأبسط."
+    },
+    {
+      "question": "Compared to CISC, RISC architectures typically feature:",
+      "options": [
+        "More complex instructions",
+        "Instructions that mostly execute in a single clock cycle",
+        "Larger instruction sets",
+        "Variable length instructions"
+      ],
+      "correctAnswer": "Instructions that mostly execute in a single clock cycle",
+      "explanation": "تتميز معمارية RISC بأن معظم تعليماتها بسيطة بما يكفي لتنفيذها في دورة ساعة واحدة، مما يؤدي إلى تصميم أبسط للمعالج."
+    },
+    {
+      "question": "What is the primary role of the CPU within a microcontroller?",
+      "options": [
+        "Storing the program code",
+        "Converting analog signals to digital",
+        "Executing program instructions",
+        "Managing power supply"
+      ],
+      "correctAnswer": "Executing program instructions",
+      "explanation": "وحدة المعالجة المركزية (CPU) هي 'عقل' المتحكم الدقيق، وهي مسؤولة عن جلب وتفسير وتنفيذ التعليمات البرمجية."
+    },
+    {
+      "question": "Which type of memory is volatile, meaning its contents are lost when power is removed?",
+      "options": [
+        "Flash Memory",
+        "EEPROM",
+        "ROM",
+        "SRAM (Static RAM)"
+      ],
+      "correctAnswer": "SRAM (Static RAM)",
+      "explanation": "ذاكرة الوصول العشوائي الساكنة (SRAM)، المستخدمة عادة لذاكرة البيانات في المتحكمات، هي ذاكرة متطايرة."
+    },
+    {
+      "question": "Program code (firmware) in an MCU is typically stored in which type of memory?",
+      "options": [
+        "SRAM",
+        "Cache Memory",
+        "Flash Memory or ROM",
+        "External Hard Drive"
+      ],
+      "correctAnswer": "Flash Memory or ROM",
+      "explanation": "ذاكرة البرنامج، التي يجب أن تحتفظ بمحتوياتها عند انقطاع التيار، تكون عادةً من نوع غير متطاير مثل Flash أو ROM أو EEPROM."
+    },
+    {
+      "question": "What connects the CPU, Memory, and I/O peripherals inside an MCU?",
+      "options": [
+        "ADC Converter",
+        "System Buses (Address, Data, Control)",
+        "Oscillator",
+        "Power Regulator"
+      ],
+      "correctAnswer": "System Buses (Address, Data, Control)",
+      "explanation": "الناقلات الداخلية (System Buses) هي المسارات التي تربط المكونات الرئيسية للمتحكم الدقيق وتسمح بتبادل البيانات والعناوين وإشارات التحكم."
+    },
+    {
+      "question": "In AVR microcontrollers, which register is used to set a pin as either Input or Output?",
+      "options": [
+        "PORTx",
+        "PINx",
+        "DDRx",
+        "ADCSR"
+      ],
+      "correctAnswer": "DDRx",
+      "explanation": "سجل اتجاه البيانات (DDRx - Data Direction Register) يستخدم لتحديد ما إذا كان كل دبوس في المنفذ 'x' سيعمل كمدخل (0) أو مخرج (1)."
+    },
+    {
+      "question": "To configure Pin 2 of Port B (PB2) as an output on an AVR MCU, what value should be set for the corresponding bit in DDRB?",
+      "options": [
+        "0",
+        "1",
+        "Read from PINB",
+        "Write to PORTB"
+      ],
+      "correctAnswer": "1",
+      "explanation": "لجعل الدبوس مخرجًا، يجب ضبط البت المقابل له في سجل DDRx إلى القيمة 1."
+    },
+    {
+      "question": "Which AVR register should you read to get the current logical state of Port A's pins?",
+      "options": [
+        "PORTA",
+        "PINA",
+        "DDRA",
+        "ADCA"
+      ],
+      "correctAnswer": "PINA",
+      "explanation": "سجل إدخال المنفذ (PINx - Port Input Pins Register) يستخدم لقراءة الحالة المنطقية الحالية لأرجل المنفذ 'x'."
+    },
+    {
+      "question": "If an AVR pin is configured as Input (DDRx.n = 0), what happens when you write '1' to the corresponding bit in PORTx (PORTx.n = 1)?",
+      "options": [
+        "The pin becomes an output",
+        "The pin outputs a High signal",
+        "The internal pull-up resistor is enabled",
+        "The pin state is read"
+      ],
+      "correctAnswer": "The internal pull-up resistor is enabled",
+      "explanation": "عندما يكون الدبوس مدخلاً، فإن كتابة '1' إلى البت المقابل في سجل PORTx تقوم بتفعيل مقاومة الرفع (Pull-up) الداخلية لهذا الدبوس."
+    },
+    {
+      "question": "Setting a pin as input (DDRx.n=0) and disabling its pull-up (PORTx.n=0) results in what state?",
+      "options": [
+        "Output High",
+        "Output Low",
+        "Input with Pull-up",
+        "Tri-stated (High Impedance)"
+      ],
+      "correctAnswer": "Tri-stated (High Impedance)",
+      "explanation": "عندما يكون الدبوس مدخلاً ومقاومة الرفع معطلة، يكون الدبوس في حالة مقاومة عالية (Tri-state)، مما يعني أنه 'عائم' ما لم يتم توصيله خارجيًا."
+    },
+    {
+      "question": "The HC-SR501 sensor is primarily used to detect:",
+      "options": [
+        "Temperature",
+        "Distance",
+        "Gas concentration",
+        "Motion"
+      ],
+      "correctAnswer": "Motion",
+      "explanation": "مستشعر HC-SR501 هو مستشعر بالأشعة تحت الحمراء السلبية (PIR) يستخدم بشكل شائع للكشف عن حركة الأشخاص أو الحيوانات."
+    },
+    {
+      "question": "Which sensor uses sound waves to measure distance?",
+      "options": [
+        "DHT11",
+        "HC-SR04",
+        "MQ-2 Gas Sensor",
+        "DS18B20"
+      ],
+      "correctAnswer": "HC-SR04",
+      "explanation": "مستشعر المسافة بالموجات فوق الصوتية HC-SR04 يرسل نبضة صوتية ويقيس الوقت المستغرق لعودة الصدى لتحديد المسافة."
+    },
+    {
+      "question": "Sensors typically convert a physical parameter (like temperature or light) into what type of signal for the microcontroller?",
+      "options": [
+        "Mechanical force",
+        "Sound waves",
+        "An electrical signal (analog or digital)",
+        "Heat"
+      ],
+      "correctAnswer": "An electrical signal (analog or digital)",
+      "explanation": "وظيفة المستشعر هي اكتشاف التغيرات الفيزيائية وتحويلها إلى إشارة كهربائية (غالباً جهد أو تيار، قد تكون تناظرية أو رقمية بعد المعالجة) يمكن للمتحكم الدقيق قراءتها."
+    }
+  ]
+}

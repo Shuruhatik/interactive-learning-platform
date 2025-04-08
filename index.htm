@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Revision</title>
+    <meta name="description"
+        content="IoT revision website for first year students at BUE (Burg El Arab Technology University) - Semester 2">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Readex+Pro:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style type="text/tailwindcss">
+        @layer utilities {
+          .content-auto {
+            content-visibility: auto;
+          }
+          @keyframes heartbeat {
+             0%, 100% { transform: scale(1); }
+             50% { transform: scale(1.2); }
+           }
+          .animate-heartbeat {
+             animation: heartbeat 1.2s ease-in-out infinite;
+           }
+           html {
+               scroll-behavior: smooth;
+           }
+           .table-wrapper::-webkit-scrollbar {
+                height: 8px;
+            }
+           .table-wrapper::-webkit-scrollbar-track {
+                background: rgba(100, 116, 139, 0.2);
+                border-radius: 4px;
+            }
+           .table-wrapper::-webkit-scrollbar-thumb {
+                background: rgba(100, 116, 139, 0.5);
+                border-radius: 4px;
+            }
+            .table-wrapper::-webkit-scrollbar-thumb:hover {
+                 background: rgba(100, 116, 139, 0.7);
+            }
+            .table-wrapper {
+                scrollbar-width: thin;
+                scrollbar-color: rgba(100, 116, 139, 0.5) rgba(100, 116, 139, 0.2);
+            }
+        }
+        html, body { min-height: 100%; display: flex; flex-direction: column; }
+        body { font-family: 'Readex Pro', sans-serif; flex-grow: 1; } 
+        .main-container { flex-grow: 1; }
+        input[type="radio"] { display: none; }
+        #content-body h3 { @apply text-xl font-semibold mt-6 mb-3 border-b pb-2; }
+        #content-body h4 { @apply text-lg font-semibold mt-5 mb-2; }
+        #content-body ul { @apply list-disc list-inside space-y-1 my-2 ml-5; }
+        #content-body table { @apply w-full text-sm text-left mt-4 border min-w-[600px]; }
+        #content-body thead { @apply text-xs uppercase; }
+        #content-body th, #content-body td { @apply px-4 py-2 border; }
+        footer { width: 100%; margin-top: auto; padding: 1.5rem 0; text-align: center; font-size: 0.875rem; }
+        footer a { @apply hover:underline; text-decoration: none; }
+        .footer-heart { transition: color 0.2s ease-in-out; }
+        hr.separator { @apply my-4 border-b; }
+         .theme-switcher-container {
+             @apply fixed top-5 right-5 z-50;
+        }
+        .theme-switcher-btn {
+             @apply relative w-10 h-10 rounded-full shadow-lg flex items-center justify-center text-lg transition-transform duration-200 ease-in-out hover:scale-110 cursor-pointer;
+        }
+         .theme-menu {
+             @apply absolute top-full right-0 mt-2 w-auto p-4 rounded-lg shadow-xl grid grid-cols-5 gap-4 border justify-items-center;
+             display: none;
+             min-width: 170px;
+             transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+         }
+         .theme-option {
+              @apply w-7 h-7 rounded-full cursor-pointer border-2 border-transparent hover:opacity-80 transition-opacity duration-150;
+         }
+         .theme-option-active {
+              @apply border-white ring-2 ring-offset-1 ring-white;
+         }
+         .quiz-explanation {
+              @apply p-4 mt-5 rounded border-l-4; font-family: 'Readex Pro', sans-serif; text-align: right; direction: rtl; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+         }
+          .quiz-explanation h4 {
+              @apply mb-2 font-semibold; font-family: 'Readex Pro', sans-serif; text-align: left; direction: ltr; transition: color 0.2s ease-in-out;
+          }
+           .arabic-explanation-text {
+               @apply block text-sm mt-1 ml-4; font-family: 'Readex Pro', sans-serif; transition: color 0.2s ease-in-out;
+           }
+           .option-label {
+                @apply flex items-center justify-between w-full px-6 py-3 border rounded-lg cursor-pointer transition-colors duration-200 ease-in-out mb-3 text-left;
+           }
+           .option-icon {
+                @apply ml-3 text-lg;
+           }
+           .card, .btn, body, footer, footer a, h1, h2, h3, h4, p, li, th, td, .option-label, strong, .separator, .theme-switcher-btn, .theme-menu, .lecture-selection-button {
+                @apply transition-colors duration-200 ease-in-out;
+           }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center">
+    <div class="w-full max-w-4xl mx-auto main-container px-4 sm:px-6 flex-grow">
+        <header class="mb-10 text-center pt-6 sm:pt-10">
+            <h1 class="text-4xl sm:text-5xl font-bold">IoT Revision</h1>
+            <p id="platform-subtitle" class="text-lg sm:text-xl mt-3">Select a Lecture</p>
+        </header>
+
+        <section id="lecture-selection-area"
+            class="card text-center bg-gray-800 border border-gray-700 rounded-lg shadow-xl p-6 sm:p-8 mb-8 transition-colors duration-200">
+            <h2 class="text-2xl font-bold mb-6">اختر المحاضرة</h2>
+            <div id="lecture-buttons" class="flex flex-wrap justify-center gap-3">
+            </div>
+        </section>
+
+        <main id="content-area"
+            class="card bg-gray-800 border border-gray-700 rounded-lg shadow-xl p-6 sm:p-8 mb-8 transition-colors duration-200 hidden">
+            <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+                <h2 id="content-title" class="text-2xl sm:text-3xl font-bold flex-grow"></h2>
+                <button id="back-to-selection-btn"
+                    class="btn btn-secondary btn-sm inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-list-alt"></i> المحاضرات
+                </button>
+            </div>
+            <hr class="separator border-b border-gray-600 mb-4">
+            <div id="content-body" class="space-y-4 leading-relaxed">
+            </div>
+        </main>
+
+        <section id="quiz-area"
+            class="card bg-gray-800 border border-gray-700 rounded-lg shadow-xl p-6 sm:p-8 mb-8 transition-colors duration-200 hidden">
+            <h2 id="quiz-title" class="text-2xl sm:text-3xl font-bold mb-5 separator border-b border-gray-600 pb-3">Test
+                Your Understanding!</h2>
+            <div id="question-container">
+                <p id="question-text" class="text-lg sm:text-xl font-semibold mb-5"></p>
+                <div id="options-container" class="space-y-1">
+                </div>
+                <div id="feedback" class="mt-4 text-sm font-medium"></div>
+                <div id="explanation-container" class="mt-5 hidden">
+                    <p id="explanation-text" class="quiz-explanation"></p>
+                </div>
+            </div>
+            <div class="flex flex-wrap justify-between items-center mt-8 gap-2 button-container">
+                <div class="flex gap-2 flex-wrap">
+                    <button id="back-to-lecture-btn"
+                        class="btn btn-secondary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-arrow-left"></i> محاضرة
+                    </button>
+                    <button id="back-to-selection-quiz-btn"
+                        class="btn btn-secondary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-list-alt"></i> المحاضرات
+                    </button>
+                </div>
+                <div class="flex-grow flex justify-end gap-2 flex-wrap">
+                    <button id="prev-btn"
+                        class="btn btn-secondary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled>
+                        <i class="fas fa-chevron-left"></i> سابق
+                    </button>
+                    <button id="submit-btn"
+                        class="btn btn-primary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hidden">
+                        <i class="fas fa-check"></i> إرسال
+                    </button>
+                    <button id="next-btn"
+                        class="btn btn-primary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        التالي <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button id="show-results-btn"
+                        class="btn btn-success inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hidden">
+                        <i class="fas fa-poll"></i> النتيجة
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="results-area"
+            class="card bg-gray-800 border border-gray-700 rounded-lg shadow-xl p-6 sm:p-8 mb-8 transition-colors duration-200 hidden text-center">
+            <h2 id="results-title" class="text-2xl sm:text-3xl font-bold mb-5 separator border-b border-gray-600 pb-3">
+                النتيجة النهائية</h2>
+            <p id="score-text" class="text-xl sm:text-2xl mb-6"></p>
+            <div class="flex flex-wrap justify-center gap-3 mt-6">
+                <button id="restart-btn"
+                    class="btn btn-primary inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg font-semibold text-lg ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-redo"></i> إعادة الاختبار
+                </button>
+                <button id="results-back-to-lecture-btn"
+                    class="btn btn-secondary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-arrow-left"></i> العودة إلى المحاضرة
+                </button>
+                <button id="results-back-to-selection-btn"
+                    class="btn btn-secondary inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-list-alt"></i> اختر المحاضرة
+                </button>
+            </div>
+        </section>
+
+        <div id="start-button-container" class="text-center my-10 hidden">
+            <button id="start-quiz-btn"
+                class="btn btn-primary inline-flex items-center justify-center gap-2 px-10 py-4 rounded-lg font-semibold text-xl ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-play"></i> ابدأ اختبار المحاضرة
+            </button>
+        </div>
+    </div>
+    <footer>
+        <p>
+            This website is not affiliated with Borg El Arab Technological University.<br>
+            Made with <i class="fas fa-heart footer-heart animate-heartbeat"></i> by
+            <a href="https://bio.shuruhatik.com/" target="_blank" rel="noopener noreferrer">Mohamed Abdelkarim</a>
+            with the collaboration of Novera team.
+        </p>
+    </footer>
+
+    <div class="theme-switcher-container">
+        <button id="theme-switcher-btn" class="theme-switcher-btn">
+            <i class="fas fa-palette"></i>
+        </button>
+        <div id="theme-menu" class="theme-menu">
+        </div>
+    </div>
+
+
+    <script>
+        const platformSubtitle = document.getElementById('platform-subtitle');
+        const lectureSelectionArea = document.getElementById('lecture-selection-area');
+        const lectureButtonsContainer = document.getElementById('lecture-buttons');
+        const contentArea = document.getElementById('content-area');
+        const contentTitle = document.getElementById('content-title');
+        const contentBody = document.getElementById('content-body');
+        const quizArea = document.getElementById('quiz-area');
+        const quizTitle = document.getElementById('quiz-title');
+        const questionContainer = document.getElementById('question-container');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedback = document.getElementById('feedback');
+        const explanationContainer = document.getElementById('explanation-container');
+        const explanationText = document.getElementById('explanation-text');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const startQuizBtn = document.getElementById('start-quiz-btn');
+        const startButtonContainer = document.getElementById('start-button-container');
+        const resultsArea = document.getElementById('results-area');
+        const resultsTitle = document.getElementById('results-title');
+        const scoreText = document.getElementById('score-text');
+        const restartBtn = document.getElementById('restart-btn');
+        const showResultsBtn = document.getElementById('show-results-btn');
+        const backToLectureBtn = document.getElementById('back-to-lecture-btn');
+        const backToSelectionBtn = document.getElementById('back-to-selection-btn');
+        const backToSelectionQuizBtn = document.getElementById('back-to-selection-quiz-btn');
+        const resultsBackToLectureBtn = document.getElementById('results-back-to-lecture-btn');
+        const resultsBackToSelectionBtn = document.getElementById('results-back-to-selection-btn');
+        const themeSwitcherBtn = document.getElementById('theme-switcher-btn');
+        const themeMenu = document.getElementById('theme-menu');
+        const bodyElement = document.body;
+        const footerHeart = document.querySelector('.footer-heart');
+
+        let currentLectureData = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let score = 0;
+        let quizActive = false;
+        const totalLectures = 5;
+
+        const themes = [
+            {
+                name: 'default-dark',
+                previewColor: '#3b82f6',
+                body: 'bg-gray-900 text-gray-200',
+                card: 'bg-gray-800 border border-gray-700',
+                primary: 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 text-white',
+                secondary: 'bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 text-gray-200',
+                link: 'text-blue-400 hover:text-blue-300',
+                heart: 'text-red-500',
+                separator: 'border-gray-600',
+                menu: 'bg-gray-700 border border-gray-600',
+                optionLabelBase: 'border-gray-600 bg-gray-700 text-gray-200 hover:bg-gray-600 hover:border-gray-500',
+                optionSelected: 'bg-blue-700 border-blue-500 text-white',
+                optionCorrect: 'bg-green-600 border-green-500 text-white',
+                optionWrong: 'bg-red-600 border-red-500 text-white',
+                tableHead: 'bg-gray-700 text-gray-300',
+                tableRowOdd: 'bg-gray-800',
+                tableRowEven: 'bg-gray-700',
+                tableBorder: 'border-gray-600',
+                quizExplain: 'bg-gray-700 border-l-4 border-blue-500 text-gray-300 p-4 rounded-r',
+                quizExplainH4: 'text-blue-400 font-semibold mb-2',
+                arabicExplain: 'text-gray-400 italic text-sm',
+                strongText: 'text-gray-300 font-semibold',
+                focusOffset: 'focus:ring-offset-gray-900'
+            },
+            {
+                name: 'light',
+                previewColor: '#60a5fa',
+                body: 'bg-gray-100 text-gray-900',
+                card: 'bg-white border border-gray-200 shadow-lg rounded-lg',
+                primary: 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 text-white',
+                secondary: 'bg-gray-300 hover:bg-gray-400 focus:ring-gray-500 text-gray-800',
+                link: 'text-blue-600 hover:text-blue-800',
+                heart: 'text-red-600',
+                separator: 'border-gray-300',
+                menu: 'bg-white border border-gray-300 shadow rounded',
+                optionLabelBase: 'border-gray-300 bg-gray-200 text-gray-800 hover:bg-gray-300 hover:border-gray-400',
+                optionSelected: 'bg-blue-100 border-blue-700 text-blue-800',
+                optionCorrect: 'bg-green-100 border-green-600 text-green-800',
+                optionWrong: 'bg-red-100 border-red-600 text-red-800',
+                tableHead: 'bg-gray-200 text-gray-700',
+                tableRowOdd: 'bg-white',
+                tableRowEven: 'bg-gray-50',
+                tableBorder: 'border-gray-300',
+                quizExplain: 'bg-blue-50 border-l-4 border-blue-600 text-gray-800 p-4 rounded-r',
+                quizExplainH4: 'text-blue-700 font-semibold mb-2',
+                arabicExplain: 'text-gray-500 italic text-sm',
+                strongText: 'text-gray-700 font-semibold',
+                focusOffset: 'focus:ring-offset-gray-100'
+            },
+            {
+                name: 'forest',
+                previewColor: '#ca8a04',
+                body: 'bg-green-900 text-green-100',
+                card: 'bg-green-800 border border-green-700',
+                primary: 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500 text-white',
+                secondary: 'bg-green-700 hover:bg-green-600 focus:ring-green-500 text-green-100',
+                link: 'text-yellow-400 hover:text-yellow-300',
+                heart: 'text-yellow-400',
+                separator: 'border-green-600',
+                menu: 'bg-green-700 border border-green-600',
+                optionLabelBase: 'border-green-600 bg-green-700 text-green-100 hover:bg-green-600 hover:border-green-500',
+                optionSelected: 'bg-yellow-700 border-yellow-500 text-white',
+                optionCorrect: 'bg-lime-600 border-lime-500 text-white',
+                optionWrong: 'bg-red-700 border-red-500 text-white',
+                tableHead: 'bg-green-700 text-green-200',
+                tableRowOdd: 'bg-green-800',
+                tableRowEven: 'bg-green-700',
+                tableBorder: 'border-green-600',
+                quizExplain: 'bg-green-700 border-l-4 border-yellow-500 text-green-100 p-4 rounded-r',
+                quizExplainH4: 'text-yellow-400 font-semibold mb-2',
+                arabicExplain: 'text-green-300 italic text-sm',
+                strongText: 'text-green-200 font-semibold',
+                focusOffset: 'focus:ring-offset-green-900'
+            },
+            {
+                name: 'ocean',
+                previewColor: '#06b6d4',
+                body: 'bg-blue-900 text-blue-100',
+                card: 'bg-blue-800 border border-blue-700',
+                primary: 'bg-cyan-500 hover:bg-cyan-600 focus:ring-cyan-400 text-white',
+                secondary: 'bg-blue-700 hover:bg-blue-600 focus:ring-blue-500 text-blue-100',
+                link: 'text-cyan-300 hover:text-cyan-200',
+                heart: 'text-cyan-300',
+                separator: 'border-blue-600',
+                menu: 'bg-blue-700 border border-blue-600',
+                optionLabelBase: 'border-blue-600 bg-blue-700 text-blue-100 hover:bg-blue-600 hover:border-blue-500',
+                optionSelected: 'bg-cyan-600 border-cyan-400 text-white',
+                optionCorrect: 'bg-green-600 border-green-400 text-white',
+                optionWrong: 'bg-red-600 border-red-400 text-white',
+                tableHead: 'bg-blue-700 text-blue-200',
+                tableRowOdd: 'bg-blue-800',
+                tableRowEven: 'bg-blue-700',
+                tableBorder: 'border-blue-600',
+                quizExplain: 'bg-blue-700 border-l-4 border-cyan-400 text-blue-100 p-4 rounded-r',
+                quizExplainH4: 'text-cyan-300 font-semibold mb-2',
+                arabicExplain: 'text-blue-300 italic text-sm',
+                strongText: 'text-blue-200 font-semibold',
+                focusOffset: 'focus:ring-offset-blue-900'
+            },
+            {
+                name: 'sunset',
+                previewColor: '#dc2626',
+                body: 'bg-orange-950 text-orange-100',
+                card: 'bg-orange-900 border border-orange-800',
+                primary: 'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white',
+                secondary: 'bg-orange-700 hover:bg-orange-600 focus:ring-orange-500 text-orange-100',
+                link: 'text-red-400 hover:text-red-300',
+                heart: 'text-red-400',
+                separator: 'border-orange-700',
+                menu: 'bg-orange-800 border border-orange-700',
+                optionLabelBase: 'border-orange-700 bg-orange-800 text-orange-100 hover:bg-orange-700 hover:border-orange-600',
+                optionSelected: 'bg-red-700 border-red-500 text-white',
+                optionCorrect: 'bg-green-600 border-green-400 text-white',
+                optionWrong: 'bg-yellow-600 border-yellow-400 text-black',
+                tableHead: 'bg-orange-800 text-orange-200',
+                tableRowOdd: 'bg-orange-900',
+                tableRowEven: 'bg-orange-800',
+                tableBorder: 'border-orange-700',
+                quizExplain: 'bg-orange-800 border-l-4 border-red-500 text-orange-100 p-4 rounded-r',
+                quizExplainH4: 'text-red-400 font-semibold mb-2',
+                arabicExplain: 'text-orange-300 italic text-sm',
+                strongText: 'text-orange-200 font-semibold',
+                focusOffset: 'focus:ring-offset-orange-950'
+            },
+            {
+                name: 'lavender',
+                previewColor: '#ec4899',
+                body: 'bg-purple-900 text-purple-100',
+                card: 'bg-purple-800 border border-purple-700',
+                primary: 'bg-pink-500 hover:bg-pink-600 focus:ring-pink-400 text-white',
+                secondary: 'bg-purple-700 hover:bg-purple-600 focus:ring-purple-500 text-purple-100',
+                link: 'text-pink-300 hover:text-pink-200',
+                heart: 'text-pink-300',
+                separator: 'border-purple-600',
+                menu: 'bg-purple-700 border border-purple-600',
+                optionLabelBase: 'border-purple-600 bg-purple-700 text-purple-100 hover:bg-purple-600 hover:border-purple-500',
+                optionSelected: 'bg-pink-600 border-pink-400 text-white',
+                optionCorrect: 'bg-green-600 border-green-400 text-white',
+                optionWrong: 'bg-red-600 border-red-400 text-white',
+                tableHead: 'bg-purple-700 text-purple-200',
+                tableRowOdd: 'bg-purple-800',
+                tableRowEven: 'bg-purple-700',
+                tableBorder: 'border-purple-600',
+                quizExplain: 'bg-purple-700 border-l-4 border-pink-400 text-purple-100 p-4 rounded-r',
+                quizExplainH4: 'text-pink-300 font-semibold mb-2',
+                arabicExplain: 'text-purple-300 italic text-sm',
+                strongText: 'text-purple-200 font-semibold',
+                focusOffset: 'focus:ring-offset-purple-900'
+            },
+            {
+                name: 'mono-dark',
+                previewColor: '#d1d5db',
+                body: 'bg-gray-950 text-gray-300',
+                card: 'bg-gray-800 border border-gray-700',
+                primary: 'bg-gray-300 hover:bg-gray-400 focus:ring-gray-200 text-black',
+                secondary: 'bg-gray-700 hover:bg-gray-600 focus:ring-gray-500 text-gray-300',
+                link: 'text-gray-400 hover:text-gray-200',
+                heart: 'text-gray-400',
+                separator: 'border-gray-600',
+                menu: 'bg-gray-700 border border-gray-600',
+                optionLabelBase: 'border-gray-600 bg-gray-700 text-gray-300 hover:bg-gray-600 hover:border-gray-500',
+                optionSelected: 'bg-gray-500 border-gray-400 text-white',
+                optionCorrect: 'bg-green-600 border-green-500 text-white',
+                optionWrong: 'bg-red-600 border-red-500 text-white',
+                tableHead: 'bg-gray-700 text-gray-400',
+                tableRowOdd: 'bg-gray-800',
+                tableRowEven: 'bg-gray-700',
+                tableBorder: 'border-gray-600',
+                quizExplain: 'bg-gray-800 border-l-4 border-gray-500 text-gray-300 p-4 rounded-r',
+                quizExplainH4: 'text-gray-400 font-semibold mb-2',
+                arabicExplain: 'text-gray-500 italic text-sm',
+                strongText: 'text-gray-400 font-semibold',
+                focusOffset: 'focus:ring-offset-gray-950'
+            },
+            {
+                name: 'coffee',
+                previewColor: '#ea580c',
+                body: 'bg-[#432818] text-amber-100',
+                card: 'bg-[#6f4e37] border border-[#8a6b52]',
+                primary: 'bg-orange-600 hover:bg-orange-700 focus:ring-orange-500 text-white',
+                secondary: 'bg-[#8a6b52] hover:bg-[#a0826c] focus:ring-[#8a6b52] text-amber-100',
+                link: 'text-orange-400 hover:text-orange-300',
+                heart: 'text-orange-400',
+                separator: 'border-[#8a6b52]',
+                menu: 'bg-[#6f4e37] border border-[#8a6b52]',
+                optionLabelBase: 'border-[#8a6b52] bg-[#6f4e37] text-amber-100 hover:bg-[#8a6b52] hover:border-[#a0826c]',
+                optionSelected: 'bg-orange-700 border-orange-500 text-white',
+                optionCorrect: 'bg-green-600 border-green-500 text-white',
+                optionWrong: 'bg-red-600 border-red-500 text-white',
+                tableHead: 'bg-[#6f4e37] text-amber-200',
+                tableRowOdd: 'bg-[#432818]',
+                tableRowEven: 'bg-[#6f4e37]',
+                tableBorder: 'border-[#8a6b52]',
+                quizExplain: 'bg-[#6f4e37] border-l-4 border-orange-500 text-amber-100 p-4 rounded-r',
+                quizExplainH4: 'text-orange-400 font-semibold mb-2',
+                arabicExplain: 'text-amber-300 italic text-sm',
+                strongText: 'text-amber-200 font-semibold',
+                focusOffset: 'focus:ring-offset-[#432818]'
+            },
+            {
+                name: 'rose',
+                previewColor: '#ef4444',
+                body: 'bg-rose-950 text-rose-100',
+                card: 'bg-rose-900 border border-rose-800',
+                primary: 'bg-red-500 hover:bg-red-600 focus:ring-red-400 text-white',
+                secondary: 'bg-rose-700 hover:bg-rose-600 focus:ring-rose-500 text-rose-100',
+                link: 'text-red-400 hover:text-red-300',
+                heart: 'text-red-400',
+                separator: 'border-rose-700',
+                menu: 'bg-rose-800 border border-rose-700',
+                optionLabelBase: 'border-rose-700 bg-rose-800 text-rose-100 hover:bg-rose-700 hover:border-rose-600',
+                optionSelected: 'bg-red-600 border-red-400 text-white',
+                optionCorrect: 'bg-green-500 border-green-400 text-white',
+                optionWrong: 'bg-yellow-500 border-yellow-400 text-black',
+                tableHead: 'bg-rose-800 text-rose-200',
+                tableRowOdd: 'bg-rose-900',
+                tableRowEven: 'bg-rose-800',
+                tableBorder: 'border-rose-700',
+                quizExplain: 'bg-rose-800 border-l-4 border-red-400 text-rose-100 p-4 rounded-r',
+                quizExplainH4: 'text-red-400 font-semibold mb-2',
+                arabicExplain: 'text-rose-300 italic text-sm',
+                strongText: 'text-rose-200 font-semibold',
+                focusOffset: 'focus:ring-offset-rose-950'
+            },
+            {
+                name: 'teal',
+                previewColor: '#0891b2',
+                body: 'bg-teal-900 text-teal-100',
+                card: 'bg-teal-800 border border-teal-700',
+                primary: 'bg-cyan-600 hover:bg-cyan-700 focus:ring-cyan-500 text-white',
+                secondary: 'bg-teal-700 hover:bg-teal-600 focus:ring-teal-500 text-teal-100',
+                link: 'text-cyan-400 hover:text-cyan-300',
+                heart: 'text-cyan-400',
+                separator: 'border-teal-600',
+                menu: 'bg-teal-700 border border-teal-600',
+                optionLabelBase: 'border-teal-600 bg-teal-700 text-teal-100 hover:bg-teal-600 hover:border-teal-500',
+                optionSelected: 'bg-cyan-700 border-cyan-500 text-white',
+                optionCorrect: 'bg-green-500 border-green-400 text-white',
+                optionWrong: 'bg-red-500 border-red-400 text-white',
+                tableHead: 'bg-teal-700 text-teal-200',
+                tableRowOdd: 'bg-teal-800',
+                tableRowEven: 'bg-teal-700',
+                tableBorder: 'border-teal-600',
+                quizExplain: 'bg-teal-700 border-l-4 border-cyan-500 text-teal-100 p-4 rounded-r',
+                quizExplainH4: 'text-cyan-400 font-semibold mb-2',
+                arabicExplain: 'text-teal-300 italic text-sm',
+                strongText: 'text-teal-200 font-semibold',
+                focusOffset: 'focus:ring-offset-teal-900'
+            },
+            {
+                name: 'amoled-blue',
+                previewColor: '#000000',
+                body: 'bg-black text-gray-300',
+                card: 'bg-gray-900 border border-gray-800',
+                primary: 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 text-white',
+                secondary: 'bg-gray-700 hover:bg-gray-600 focus:ring-gray-500 text-gray-300',
+                link: 'text-blue-400 hover:text-blue-300',
+                heart: 'text-blue-400',
+                separator: 'border-gray-700',
+                menu: 'bg-gray-800 border border-gray-700',
+                optionLabelBase: 'border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:border-gray-600',
+                optionSelected: 'bg-blue-700 border-blue-500 text-white',
+                optionCorrect: 'bg-green-700 border-green-600 text-white',
+                optionWrong: 'bg-red-700 border-red-600 text-white',
+                tableHead: 'bg-gray-800 text-gray-400',
+                tableRowOdd: 'bg-gray-900',
+                tableRowEven: 'bg-gray-800',
+                tableBorder: 'border-gray-700',
+                quizExplain: 'bg-gray-800 border-l-4 border-blue-500 text-gray-300 p-4 rounded-r',
+                quizExplainH4: 'text-blue-400 font-semibold mb-2',
+                arabicExplain: 'text-gray-500 italic text-sm',
+                strongText: 'text-gray-300 font-semibold',
+                focusOffset: 'focus:ring-offset-black'
+            },
+            {
+                name: 'mint-light',
+                previewColor: '#34d399',
+                body: 'bg-emerald-50 text-emerald-900',
+                card: 'bg-white border border-emerald-200 shadow-md rounded-lg',
+                primary: 'bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500 text-white',
+                secondary: 'bg-emerald-200 hover:bg-emerald-300 focus:ring-emerald-400 text-emerald-800',
+                link: 'text-emerald-700 hover:text-emerald-900',
+                heart: 'text-red-500',
+                separator: 'border-emerald-300',
+                menu: 'bg-white border border-emerald-300 shadow rounded',
+                optionLabelBase: 'border-emerald-300 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 hover:border-emerald-400',
+                optionSelected: 'bg-emerald-200 border-emerald-600 text-emerald-900',
+                optionCorrect: 'bg-green-100 border-green-600 text-green-800',
+                optionWrong: 'bg-red-100 border-red-600 text-red-800',
+                tableHead: 'bg-emerald-200 text-emerald-800',
+                tableRowOdd: 'bg-white',
+                tableRowEven: 'bg-emerald-50',
+                tableBorder: 'border-emerald-300',
+                quizExplain: 'bg-emerald-100 border-l-4 border-emerald-600 text-emerald-800 p-4 rounded-r',
+                quizExplainH4: 'text-emerald-700 font-semibold mb-2',
+                arabicExplain: 'text-emerald-600 italic text-sm',
+                strongText: 'text-emerald-800 font-semibold',
+                focusOffset: 'focus:ring-offset-emerald-50'
+            },
+            {
+                name: 'crimson-dark',
+                previewColor: '#dc2626',
+                body: 'bg-gray-950 text-red-200',
+                card: 'bg-red-900 border border-red-800',
+                primary: 'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white',
+                secondary: 'bg-gray-700 hover:bg-gray-600 focus:ring-gray-500 text-gray-200',
+                link: 'text-red-400 hover:text-red-300',
+                heart: 'text-red-400',
+                separator: 'border-red-800',
+                menu: 'bg-red-950 border border-red-800',
+                optionLabelBase: 'border-red-800 bg-red-900 text-red-200 hover:bg-red-800 hover:border-red-700',
+                optionSelected: 'bg-red-700 border-red-500 text-white',
+                optionCorrect: 'bg-green-600 border-green-500 text-white',
+                optionWrong: 'bg-orange-600 border-orange-500 text-white',
+                tableHead: 'bg-red-900 text-red-300',
+                tableRowOdd: 'bg-gray-950',
+                tableRowEven: 'bg-red-900',
+                tableBorder: 'border-red-800',
+                quizExplain: 'bg-red-900 border-l-4 border-red-500 text-red-200 p-4 rounded-r',
+                quizExplainH4: 'text-red-400 font-semibold mb-2',
+                arabicExplain: 'text-red-400 italic text-sm',
+                strongText: 'text-red-300 font-semibold',
+                focusOffset: 'focus:ring-offset-gray-950'
+            },
+            {
+                name: 'super-dark',
+                previewColor: '#1f2937',
+                body: 'bg-gray-950 text-gray-400',
+                card: 'bg-gray-900 border border-gray-800',
+                primary: 'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 text-white',
+                secondary: 'bg-gray-700 hover:bg-gray-600 focus:ring-gray-500 text-gray-300',
+                link: 'text-indigo-400 hover:text-indigo-300',
+                heart: 'text-indigo-400',
+                separator: 'border-gray-700',
+                menu: 'bg-gray-800 border border-gray-700',
+                optionLabelBase: 'border-gray-700 bg-gray-800 text-gray-400 hover:bg-gray-700 hover:border-gray-600',
+                optionSelected: 'bg-indigo-700 border-indigo-500 text-white',
+                optionCorrect: 'bg-green-700 border-green-600 text-white',
+                optionWrong: 'bg-red-700 border-red-600 text-white',
+                tableHead: 'bg-gray-800 text-gray-400',
+                tableRowOdd: 'bg-gray-900',
+                tableRowEven: 'bg-gray-800',
+                tableBorder: 'border-gray-700',
+                quizExplain: 'bg-gray-800 border-l-4 border-indigo-500 text-gray-400 p-4 rounded-r',
+                quizExplainH4: 'text-indigo-400 font-semibold mb-2',
+                arabicExplain: 'text-gray-500 italic text-sm',
+                strongText: 'text-gray-300 font-semibold',
+                focusOffset: 'focus:ring-offset-gray-950'
+            },
+            {
+                name: 'sky-light',
+                previewColor: '#38bdf8',
+                body: 'bg-sky-50 text-sky-900',
+                card: 'bg-white border border-sky-200 shadow-md rounded-lg',
+                primary: 'bg-sky-500 hover:bg-sky-600 focus:ring-sky-400 text-white',
+                secondary: 'bg-sky-200 hover:bg-sky-300 focus:ring-sky-300 text-sky-800',
+                link: 'text-sky-600 hover:text-sky-800',
+                heart: 'text-red-500',
+                separator: 'border-sky-300',
+                menu: 'bg-white border border-sky-300 shadow rounded',
+                optionLabelBase: 'border-sky-300 bg-sky-100 text-sky-800 hover:bg-sky-200 hover:border-sky-400',
+                optionSelected: 'bg-sky-200 border-sky-600 text-sky-900',
+                optionCorrect: 'bg-green-100 border-green-600 text-green-800',
+                optionWrong: 'bg-red-100 border-red-600 text-red-800',
+                tableHead: 'bg-sky-200 text-sky-800',
+                tableRowOdd: 'bg-white',
+                tableRowEven: 'bg-sky-50',
+                tableBorder: 'border-sky-300',
+                quizExplain: 'bg-sky-100 border-l-4 border-sky-600 text-sky-800 p-4 rounded-r',
+                quizExplainH4: 'text-sky-700 font-semibold mb-2',
+                arabicExplain: 'text-sky-600 italic text-sm',
+                strongText: 'text-sky-800 font-semibold',
+                focusOffset: 'focus:ring-offset-sky-50'
+            },
+            {
+                name: 'slate-mono',
+                previewColor: '#64748b',
+                body: 'bg-slate-900 text-slate-300',
+                card: 'bg-slate-800 border border-slate-700',
+                primary: 'bg-slate-400 hover:bg-slate-500 focus:ring-slate-300 text-black',
+                secondary: 'bg-slate-600 hover:bg-slate-500 focus:ring-slate-400 text-slate-200',
+                link: 'text-slate-400 hover:text-slate-200',
+                heart: 'text-slate-400',
+                separator: 'border-slate-600',
+                menu: 'bg-slate-700 border border-slate-600',
+                optionLabelBase: 'border-slate-600 bg-slate-700 text-slate-300 hover:bg-slate-600 hover:border-slate-500',
+                optionSelected: 'bg-slate-500 border-slate-400 text-white',
+                optionCorrect: 'bg-green-600 border-green-500 text-white',
+                optionWrong: 'bg-red-600 border-red-500 text-white',
+                tableHead: 'bg-slate-700 text-slate-400',
+                tableRowOdd: 'bg-slate-800',
+                tableRowEven: 'bg-slate-700',
+                tableBorder: 'border-slate-600',
+                quizExplain: 'bg-slate-800 border-l-4 border-slate-500 text-slate-300 p-4 rounded-r',
+                quizExplainH4: 'text-slate-400 font-semibold mb-2',
+                arabicExplain: 'text-slate-500 italic text-sm',
+                strongText: 'text-slate-300 font-semibold',
+                focusOffset: 'focus:ring-offset-slate-900'
+            }
+        ];
+        let currentThemeIndex = 0;
+
+        const themeClassPrefixes = ['bg-', 'text-', 'border-', 'ring-', 'hover:bg-', 'hover:text-', 'hover:border-', 'focus:ring-', 'ring-offset-'];
+        const animationClasses = ['animate-heartbeat'];
+
+        const ALL_THEME_CLASSES = new Set();
+        themes.forEach(theme => {
+            Object.values(theme).forEach(value => {
+                if (typeof value === 'string') {
+                    value.split(' ').forEach(cls => {
+                        if (themeClassPrefixes.some(prefix => cls.startsWith(prefix))) {
+                            ALL_THEME_CLASSES.add(cls);
+                        }
+                    });
+                }
+            });
+        });
+
+        function cleanThemeClasses(element) {
+            if (!element || !element.classList) return;
+            const classesToRemove = [...element.classList].filter(cls =>
+                ALL_THEME_CLASSES.has(cls) && !animationClasses.includes(cls)
+            );
+            if (classesToRemove.length > 0) {
+                try { element.classList.remove(...classesToRemove); } catch (e) { console.warn("Failed to remove classes:", classesToRemove, "from", element, e); }
+            }
+        }
+
+        function applyTheme(themeIndex) {
+            const theme = themes[themeIndex];
+            currentThemeIndex = themeIndex;
+
+            const allElements = [
+                bodyElement, themeSwitcherBtn, themeMenu, footerHeart,
+                ...document.querySelectorAll('.card, .btn, footer a, #content-body h3, #content-body h4, #content-title, #quiz-area h2, #results-area h2, header h1, header p, footer p, #question-text, .option-label, .quiz-explanation, .quiz-explanation h4, .separator, .arabic-explanation-text, .lecture-selection-button, #content-body strong, #content-body table, #content-body thead, #content-body tbody tr, #content-body th, #content-body td')
+            ];
+            allElements.forEach(cleanThemeClasses);
+
+            bodyElement.classList.add(...theme.body.split(' '));
+            document.querySelectorAll('.card').forEach(el => el.classList.add(...theme.card.split(' ')));
+            document.querySelectorAll('.btn-primary, .btn-success').forEach(el => el.classList.add(...theme.primary.split(' ')));
+            document.querySelectorAll('.btn-secondary, .lecture-selection-button').forEach(el => el.classList.add(...theme.secondary.split(' ')));
+            document.querySelectorAll('.btn-danger').forEach(el => el.classList.add(...theme.primary.split(' ').map(c => c.replace('blue', 'red').replace('cyan', 'red').replace('yellow', 'red').replace('pink', 'red').replace('orange', 'red').replace('purple', 'red').replace('gray', 'red').replace('teal', 'red').replace('green', 'red'))));
+
+            document.querySelectorAll('footer a').forEach(el => el.classList.add(...theme.link.split(' ')));
+            themeSwitcherBtn.classList.add(...theme.secondary.split(' '));
+            themeMenu.classList.add(...theme.menu.split(' '));
+            if (footerHeart) footerHeart.classList.add(...theme.heart.split(' '));
+
+            document.querySelectorAll('#content-body h3, #content-body h4, #content-title, #quiz-area h2, #results-area h2, header h1, .quiz-explanation h4').forEach(el => el.classList.add(theme.link.split(' ')[0]));
+            document.querySelectorAll('header p, footer p, #question-text, #content-body p, #content-body li, #content-body td, #content-body th').forEach(el => el.classList.add(...theme.body.split(' ').filter(c => c.startsWith('text-'))));
+            document.querySelectorAll('.arabic-explanation-text, #content-body strong').forEach(el => el.classList.add(theme.body.split(' ').filter(c => c.startsWith('text-'))[0].replace('200', '400').replace('100', '300').replace('900', '500')));
+            document.querySelectorAll('.option-label').forEach(el => {
+                el.classList.add(...theme.optionLabelBase.split(' '));
+            });
+            document.querySelectorAll('.quiz-explanation').forEach(el => {
+                el.classList.add(...theme.quizExplain.split(' '));
+                const borderColorClass = theme.link.split(' ')[0].replace('text-', 'border-');
+                el.classList.add('border-l-4', borderColorClass);
+            });
+            document.querySelectorAll('.separator, #content-body h3, #content-body table, #content-body th, #content-body td').forEach(el => {
+                el.classList.add(theme.separator.split(' ')[0]);
+            });
+            document.querySelectorAll('#content-body tbody tr:nth-child(odd)').forEach(el => el.classList.add(...theme.tableRowOdd.split(' ')));
+            document.querySelectorAll('#content-body tbody tr:nth-child(even)').forEach(el => el.classList.add(...theme.tableRowEven.split(' ')));
+            document.querySelectorAll('#content-body thead').forEach(el => el.classList.add(...theme.tableHead.split(' ')));
+
+            document.querySelectorAll('.theme-option').forEach((opt, idx) => {
+                opt.classList.remove('theme-option-active');
+                opt.classList.remove(...[...opt.classList].filter(c => c.startsWith('ring-offset-') || c.startsWith('ring-')));
+                if (idx === themeIndex) {
+                    opt.classList.add('theme-option-active');
+                    const ringColorClass = theme.body.split(' ').find(c => c.startsWith('bg-')) || 'ring-offset-gray-800';
+                    opt.classList.add(ringColorClass.replace('bg-', 'ring-offset-'));
+                }
+            });
+
+            document.querySelectorAll('.btn').forEach(el => {
+                el.classList.remove(...[...el.classList].filter(c => c.startsWith('focus:ring-offset-')));
+                el.classList.add(theme.focusOffset);
+                const focusRingColor = theme.primary.split(' ').find(c => c.startsWith('focus:ring-')) || 'focus:ring-blue-500';
+                el.classList.add(focusRingColor);
+            });
+
+            localStorage.setItem('selectedThemeIndex', themeIndex);
+        }
+
+        function loadSavedTheme() {
+            const savedThemeIndex = localStorage.getItem('selectedThemeIndex');
+            const index = savedThemeIndex ? parseInt(savedThemeIndex, 10) : 0;
+            currentThemeIndex = index % themes.length;
+        }
+
+        function populateThemeMenu() {
+            themeMenu.innerHTML = '';
+            themes.forEach((theme, index) => {
+                const option = document.createElement('button');
+                option.classList.add('theme-option');
+                option.style.backgroundColor = theme.previewColor;
+                option.title = theme.name;
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    applyTheme(index);
+                    themeMenu.style.display = 'none';
+                });
+                themeMenu.appendChild(option);
+            });
+            applyTheme(currentThemeIndex);
+        }
+
+        themeSwitcherBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            themeMenu.style.display = themeMenu.style.display === 'grid' ? 'none' : 'grid';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (themeMenu && themeSwitcherBtn && !themeMenu.contains(e.target) && !themeSwitcherBtn.contains(e.target)) {
+                themeMenu.style.display = 'none';
+            }
+        });
+
+        async function simulateFetch(lectureNumber) {
+            const filePath = `data/${lectureNumber}.json`;
+            try {
+                const response = await fetch(filePath);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} while fetching ${filePath}`);
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching lecture data:', error);
+                throw error;
+            }
+        }
+
+
+        async function loadLectureData(lectureNumber) {
+            feedback.textContent = 'Loading lecture data...';
+            feedback.className = 'mt-4 text-sm text-yellow-400';
+            try {
+                currentLectureData = await simulateFetch(lectureNumber);
+
+                if (!currentLectureData || !currentLectureData.lecture || !currentLectureData.quiz || !Array.isArray(currentLectureData.quiz)) {
+                    throw new Error('Invalid data structure received.');
+                }
+                currentLectureData.quiz.forEach(q => {
+                    if (!q.explanation) q.explanation = "لا يوجد شرح إضافي متوفر لهذا السؤال حاليًا.";
+                });
+
+                platformSubtitle.textContent = currentLectureData.lecture.title;
+                contentTitle.textContent = currentLectureData.lecture.title;
+
+                const contentWrapper = document.createElement('div');
+                contentWrapper.innerHTML = currentLectureData.lecture.body;
+                contentBody.innerHTML = '';
+                contentBody.appendChild(contentWrapper);
+
+                const tables = contentBody.querySelectorAll('table');
+                tables.forEach(table => {
+                    if (!table.closest('.table-wrapper')) {
+                        const div = document.createElement('div');
+                        div.className = 'overflow-x-auto table-wrapper';
+                        table.parentNode.insertBefore(div, table);
+                        div.appendChild(table);
+                    }
+                });
+
+
+                userAnswers = new Array(currentLectureData.quiz.length).fill(null);
+                currentQuestionIndex = 0;
+                score = 0;
+                quizActive = false;
+
+                lectureSelectionArea.classList.add('hidden');
+                contentArea.classList.remove('hidden');
+                startButtonContainer.classList.remove('hidden');
+                quizArea.classList.add('hidden');
+                resultsArea.classList.add('hidden');
+                feedback.textContent = '';
+
+            } catch (error) {
+                console.error('Failed to load lecture data:', error);
+                feedback.textContent = `خطأ في تحميل المحاضرة ${lectureNumber} الرجاء المحاولة مرة أخرى.`;
+                feedback.className = 'mt-4 text-sm text-red-400';
+                platformSubtitle.textContent = 'خطأ في تحميل المحاضرة';
+                contentArea.classList.add('hidden');
+                startButtonContainer.classList.add('hidden');
+                lectureSelectionArea.classList.remove('hidden');
+            } finally {
+                applyTheme(currentThemeIndex);
+            }
+        }
+
+        function setupLectureSelection() {
+            lectureButtonsContainer.innerHTML = '';
+            for (let i = 1; i <= totalLectures; i++) {
+                const button = document.createElement('button');
+                button.innerHTML = `<i class="fas fa-book-open mr-2"></i> محاضرة ${i}`;
+                button.className = 'lecture-selection-button inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-base ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto btn btn-secondary';
+                button.addEventListener('click', () => loadLectureData(i));
+                lectureButtonsContainer.appendChild(button);
+            }
+        }
+
+
+        function loadQuestion() {
+            if (!currentLectureData || !currentLectureData.quiz) return;
+
+            const currentQuizData = currentLectureData.quiz;
+            if (currentQuestionIndex >= currentQuizData.length) return;
+
+            const currentQuestion = currentQuizData[currentQuestionIndex];
+            questionText.textContent = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
+            optionsContainer.innerHTML = '';
+            feedback.textContent = '';
+            explanationContainer.classList.add('hidden');
+            submitBtn.classList.add('hidden');
+            showResultsBtn.classList.add('hidden');
+            const theme = themes[currentThemeIndex];
+
+            currentQuestion.options.forEach((option, index) => {
+                const optionId = `q${currentQuestionIndex}_option${index}`;
+                const div = document.createElement('div');
+
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.id = optionId;
+                input.name = `q${currentQuestionIndex}_options`;
+                input.value = option;
+                input.checked = userAnswers[currentQuestionIndex] === option;
+                input.disabled = userAnswers[currentQuestionIndex] !== null;
+
+                const label = document.createElement('label');
+                label.htmlFor = optionId;
+                label.innerHTML = `<span class="option-text flex-grow mr-2">${option}</span><span class="option-icon ml-3 text-lg"></span>`;
+                label.className = 'option-label flex items-center justify-between w-full px-6 py-3 border rounded-lg cursor-pointer mb-3 text-left';
+                cleanThemeClasses(label);
+                label.classList.add(...theme.optionLabelBase.split(' '));
+
+                const iconSpan = label.querySelector('.option-icon');
+
+                if (userAnswers[currentQuestionIndex] !== null) {
+                    label.style.cursor = 'not-allowed';
+                    cleanThemeClasses(label);
+                    iconSpan.innerHTML = '';
+
+                    if (option === currentQuestion.correctAnswer) {
+                        label.classList.add(...theme.optionCorrect.split(' '));
+                        iconSpan.innerHTML = '<i class="fas fa-check"></i>';
+                    } else if (input.checked) {
+                        label.classList.add(...theme.optionWrong.split(' '));
+                        iconSpan.innerHTML = '<i class="fas fa-times"></i>';
+                    } else {
+                        label.classList.add(...theme.optionLabelBase.split(' '));
+                        label.classList.add('opacity-60');
+                    }
+                    label.classList.add('!cursor-not-allowed');
+
+                } else {
+                    input.addEventListener('change', () => {
+                        document.querySelectorAll(`label[for^="q${currentQuestionIndex}_option"]`).forEach(lbl => {
+                            cleanThemeClasses(lbl);
+                            lbl.classList.add(...theme.optionLabelBase.split(' '));
+                            lbl.classList.remove('opacity-60');
+                            lbl.querySelector('.option-icon').innerHTML = '';
+                        });
+                        cleanThemeClasses(label);
+                        label.classList.add(...theme.optionSelected.split(' '));
+
+                        submitBtn.classList.remove('hidden');
+                        nextBtn.classList.add('hidden');
+                        showResultsBtn.classList.add('hidden');
+                    });
+                }
+
+                div.appendChild(input);
+                div.appendChild(label);
+                optionsContainer.appendChild(div);
+            });
+
+            if (userAnswers[currentQuestionIndex] !== null) {
+                explanationText.innerHTML = `<h4>شرح الإجابة:</h4>${currentQuestion.explanation || "No further explanation available."}`;
+                explanationContainer.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+                nextBtn.classList.remove('hidden');
+                if (currentQuestionIndex === currentQuizData.length - 1) {
+                    nextBtn.classList.add('hidden');
+                    showResultsBtn.classList.remove('hidden');
+                }
+            } else {
+                nextBtn.classList.remove('hidden');
+                if (currentQuestionIndex === currentQuizData.length - 1) {
+                    nextBtn.classList.add('hidden');
+                }
+            }
+
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.disabled = userAnswers[currentQuestionIndex] === null;
+            applyTheme(currentThemeIndex);
+        }
+
+        function checkAnswer() {
+            const selectedOptionInput = optionsContainer.querySelector(`input[name="q${currentQuestionIndex}_options"]:checked`);
+            if (!selectedOptionInput) return;
+
+            const userAnswer = selectedOptionInput.value;
+            userAnswers[currentQuestionIndex] = userAnswer;
+            loadQuestion();
+        }
+
+        function nextQuestion() {
+            if (!currentLectureData || !currentLectureData.quiz) return;
+            if (currentQuestionIndex < currentLectureData.quiz.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function showResults() {
+            if (!currentLectureData || !currentLectureData.quiz) return;
+            score = 0;
+            for (let i = 0; i < currentLectureData.quiz.length; i++) {
+                if (userAnswers[i] === currentLectureData.quiz[i].correctAnswer) {
+                    score++;
+                }
+            }
+
+            quizArea.classList.add('hidden');
+            resultsArea.classList.remove('hidden');
+            const percentage = ((score / currentLectureData.quiz.length) * 100).toFixed(1);
+            scoreText.textContent = `You got ${score} out of ${currentLectureData.quiz.length} (${percentage}%) correct!`;
+            applyTheme(currentThemeIndex);
+        }
+
+        function restartQuiz() {
+            if (!currentLectureData) return;
+            currentQuestionIndex = 0;
+            userAnswers = new Array(currentLectureData.quiz.length).fill(null);
+            score = 0;
+            quizActive = true;
+            resultsArea.classList.add('hidden');
+            contentArea.classList.add('hidden');
+            quizArea.classList.remove('hidden');
+            startButtonContainer.classList.add('hidden');
+            loadQuestion();
+        }
+
+        function returnToLecture() {
+            quizActive = false;
+            quizArea.classList.add('hidden');
+            resultsArea.classList.add('hidden');
+            contentArea.classList.remove('hidden');
+            startButtonContainer.classList.remove('hidden');
+            platformSubtitle.textContent = currentLectureData ? currentLectureData.lecture.title : 'Select a Lecture';
+        }
+
+        function showLectureSelection() {
+            platformSubtitle.textContent = 'Select a Lecture';
+            contentArea.classList.add('hidden');
+            quizArea.classList.add('hidden');
+            resultsArea.classList.add('hidden');
+            startButtonContainer.classList.add('hidden');
+            lectureSelectionArea.classList.remove('hidden');
+            currentLectureData = null;
+            quizActive = false;
+            setupLectureSelection();
+            applyTheme(currentThemeIndex);
+        }
+
+
+        startQuizBtn.addEventListener('click', () => {
+            if (!currentLectureData) return;
+            quizActive = true;
+            contentArea.classList.add('hidden');
+            quizArea.classList.remove('hidden');
+            startButtonContainer.classList.add('hidden');
+            resultsArea.classList.add('hidden');
+            currentQuestionIndex = 0;
+            loadQuestion();
+        });
+
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', checkAnswer);
+        restartBtn.addEventListener('click', restartQuiz);
+        showResultsBtn.addEventListener('click', showResults);
+        backToLectureBtn.addEventListener('click', returnToLecture);
+        backToSelectionBtn.addEventListener('click', showLectureSelection);
+        backToSelectionQuizBtn.addEventListener('click', showLectureSelection);
+        resultsBackToLectureBtn.addEventListener('click', returnToLecture);
+        resultsBackToSelectionBtn.addEventListener('click', showLectureSelection);
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSavedTheme();
+            populateThemeMenu(); 
+            showLectureSelection(); 
+        });
+
+    </script>
+
+</body>
+
+</html>

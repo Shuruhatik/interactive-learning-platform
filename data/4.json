@@ -1,0 +1,228 @@
+{
+  "lecture": {
+    "title": "AVR Microcontroller Fundamentals: Memory, I/O, and Architecture",
+    "body": "<h2>Introduction</h2><p>This lecture builds upon the previous introduction to embedded systems and microcontrollers, focusing specifically on the AVR architecture (commonly used in Arduino). We will explore memory organization, the significance of Harvard architecture, and provide a detailed look at controlling Input/Output (I/O) pins using AVR registers.</p><h3>I. AVR Memory Organization</h3><p>AVR microcontrollers, like the ATmega16, feature different types of memory, each serving a distinct purpose:</p><ul><li><strong>Flash Memory:</strong><ul><li><strong>Type:</strong> Non-volatile (data persists after power-off).</li><li><strong>Usage:</strong> Stores the program code (firmware or sketch) that the CPU executes.</li><li><strong>Characteristics:</strong> Read-mostly memory, can be reprogrammed electrically thousands of times.</li><li><strong>Size (ATmega16):</strong> 16 KBytes.</li></ul><span class=\"arabic-explanation-text\">ذاكرة الفلاش (Flash): ذاكرة غير متطايرة، تُستخدم لتخزين الكود البرمجي (البرنامج الثابت). حجمها في ATmega16 هو 16 كيلوبايت.</span></li><li><strong>SRAM (Static RAM):</strong><ul><li><strong>Type:</strong> Volatile (data is lost when power is off).</li><li><strong>Usage:</strong> Stores temporary data, variables, and the program stack during runtime. Fast read/write access.</li><li><strong>Characteristics:</strong> Contents change frequently as the program runs.</li><li><strong>Size (ATmega16):</strong> 1 KByte.</li></ul><span class=\"arabic-explanation-text\">ذاكرة الوصول العشوائي الساكنة (SRAM): ذاكرة متطايرة، تُستخدم لتخزين البيانات والمتغيرات المؤقتة أثناء تشغيل البرنامج. حجمها في ATmega16 هو 1 كيلوبايت.</span></li><li><strong>EEPROM (Electrically Erasable Programmable Read-Only Memory):</strong><ul><li><strong>Type:</strong> Non-volatile.</li><li><strong>Usage:</strong> Stores small amounts of data that need to persist even when the device is powered off, such as configuration settings, calibration data, or device IDs.</li><li><strong>Characteristics:</strong> Can be read and written from the running program, but write cycles are slower than SRAM and have a limited lifetime (though typically very high, e.g., 100,000 cycles).</li><li><strong>Size (ATmega16):</strong> 512 Bytes.</li></ul><span class=\"arabic-explanation-text\">ذاكرة القراءة فقط القابلة للمسح والبرمجة كهربائياً (EEPROM): ذاكرة غير متطايرة، تُستخدم لتخزين البيانات التي يجب أن تبقى محفوظة بعد انقطاع الطاقة (مثل إعدادات الجهاز). حجمها في ATmega16 هو 512 بايت.</span></li></ul><h3>II. AVR Architecture: Harvard vs. Von Neumann</h3><p>AVR microcontrollers utilize a Harvard architecture.</p><ul><li><strong>Harvard Architecture:</strong> Features separate memory spaces and separate buses (data pathways) for program instructions (usually from Flash) and data (usually to/from SRAM). This allows the CPU to fetch the next instruction from program memory *at the same time* it is accessing data memory, leading to improved performance and throughput, especially in RISC processors that aim for single-cycle instruction execution.</li><li><strong>Von Neumann Architecture:</strong> Uses a single, shared memory space and a shared bus for both program instructions and data. This is simpler but can create a bottleneck (the 'Von Neumann bottleneck') as instructions and data cannot be fetched simultaneously. Most general-purpose computers use variations of this architecture.</li></ul><span class=\"arabic-explanation-text\">معمارية هارفارد (Harvard Architecture): تستخدم ناقلات (buses) منفصلة للتعليمات البرمجية والبيانات، مما يسمح بجلب التعليمات والوصول إلى البيانات في نفس الوقت، وهذا يزيد من سرعة التنفيذ. (معظم المتحكمات الدقيقة تستخدمها).<br/>معمارية فون نيومان (Von Neumann Architecture): تستخدم ناقلًا واحدًا مشتركًا للتعليمات والبيانات، مما قد يسبب اختناقًا في الأداء. (تُستخدم في معظم الحواسيب الشخصية).</span><h3>III. AVR I/O Port Control Registers</h3><p>Controlling external devices like LEDs, buttons, and sensors is done via the I/O ports. Each 8-bit port (e.g., PORTA, PORTB, PORTC, PORTD on ATmega16) is controlled by three main registers:</p><ol><li><strong>DDRx (Data Direction Register):</strong> Sets the direction (Input or Output) for each pin of port 'x'.<ul><li><code>DDRx.n = 1</code> sets pin 'n' as Output.</li><li><code>DDRx.n = 0</code> sets pin 'n' as Input.</li></ul><pre><code class=\"language-c\">// Set all pins of Port B as Output\nDDRB = 0xFF; // Equivalent to 0b11111111\n\n// Set all pins of Port C as Input\nDDRC = 0x00; // Equivalent to 0b00000000\n\n// Set PB0 as Output, PB1 as Input\nDDRB |= (1 << PB0);  // Set bit 0 of DDRB to 1\nDDRB &= ~(1 << PB1); // Clear bit 1 of DDRB to 0</code></pre></li><li><strong>PORTx (Port Data Register):</strong> Controls the output value or enables/disables the internal pull-up resistor.<ul><li>If pin 'n' is Output (DDRx.n = 1):<ul><li><code>PORTx.n = 1</code> drives the pin High.</li><li><code>PORTx.n = 0</code> drives the pin Low.</li></ul></li><li>If pin 'n' is Input (DDRx.n = 0):<ul><li><code>PORTx.n = 1</code> Enables the internal pull-up resistor.</li><li><code>PORTx.n = 0</code> Disables the internal pull-up (pin is tri-stated/floating).</li></ul></li></ul><pre><code class=\"language-c\">// Output HIGH on PB0 (assuming PB0 is output)\nPORTB |= (1 << PB0);\n\n// Output LOW on PB0\nPORTB &= ~(1 << PB0);\n\n// Enable pull-up on input pin PC0\nDDRC &= ~(1 << PC0); // Make sure PC0 is input\nPORTC |= (1 << PC0);  // Enable pull-up</code></pre></li><li><strong>PINx (Port Input Pins Register):</strong> Reads the current logical state of the pins of port 'x'. This is a read-only register. Reading this register gives the actual voltage level (High=1, Low=0) present on the pins.</li><pre><code class=\"language-c\">// Read the value from Port A (assuming it's configured as input)\nunsigned char inputValue;\nDDRA = 0x00;       // Set Port A as input\nPORTA = 0xFF;      // Enable pull-ups on all Port A pins (optional)\ninputValue = PINA; // Read the state of all Port A pins</code></pre></ol><span class=\"arabic-explanation-text\">سجلات منافذ الإدخال/الإخراج في AVR: <ul><li>DDRx: لتحديد اتجاه الدبوس (إدخال/إخراج).</li><li>PORTx: لكتابة قيمة الخرج أو للتحكم في مقاومة الرفع الداخلية (pull-up).</li><li>PINx: لقراءة الحالة المنطقية الحالية للدبوس.</li></ul></span><h4>Importance of Pull-up Resistors</h4><p>When a pin is configured as input and is not connected to anything or connected to a switch that is open, its state is 'floating' (undefined). It can randomly fluctuate between High and Low due to electrical noise. A pull-up resistor connects the pin to VCC (High voltage) through a resistance. If nothing external is pulling the pin Low, the pull-up resistor ensures the pin reads as High, providing a defined default state. This is crucial for reliable reading of inputs like buttons connected to ground.</p><span class=\"arabic-explanation-text\">مقاومات الرفع (Pull-up Resistors): تضمن وجود حالة منطقية محددة (عالية '1') لدبوس الإدخال عندما لا يكون متصلاً بشيء يدفعه للحالة المنخفضة '0'، مما يمنع حالة 'الطفو' (floating) غير المحددة.</span><h3>IV. Interrupt Handling</h3><p>Interrupts are signals (from internal peripherals like timers or external events on pins) that cause the CPU to pause its current task, execute a special function called an Interrupt Service Routine (ISR) to handle the event, and then resume the main task. If multiple interrupts occur simultaneously, the microcontroller handles them based on a predefined priority level. The interrupt with the higher priority is serviced first.</p><span class=\"arabic-explanation-text\">المقاطعات (Interrupts): هي إشارات تجعل المعالج يوقف عمله الحالي مؤقتًا لتنفيذ روتين خدمة المقاطعة (ISR) لمعالجة حدث معين. إذا حدثت مقاطعتان في نفس الوقت، يتم تنفيذ المقاطعة ذات الأولوية الأعلى أولاً.</span>"
+  },
+  "quiz": [
+    {
+      "question": "Which type of memory in an ATmega16 is non-volatile and primarily used to store the application firmware?",
+      "options": [
+        "SRAM",
+        "Cache",
+        "Flash Memory",
+        "Registers"
+      ],
+      "correctAnswer": "Flash Memory",
+      "explanation": "ذاكرة الفلاش هي ذاكرة غير متطايرة تُستخدم لتخزين البرنامج (firmware) الذي يعمل على المتحكم الدقيق."
+    },
+    {
+      "question": "Which memory type in an ATmega16 is volatile and used for storing variables and temporary data during program execution?",
+      "options": [
+        "Flash",
+        "EEPROM",
+        "SRAM",
+        "ROM"
+      ],
+      "correctAnswer": "SRAM",
+      "explanation": "ذاكرة SRAM هي ذاكرة متطايرة تُستخدم لتخزين البيانات المؤقتة والمتغيرات التي يستخدمها البرنامج أثناء تشغيله."
+    },
+    {
+      "question": "If you need to store configuration settings that must be retained even when the ATmega16 loses power, which memory type should you use?",
+      "options": [
+        "SRAM",
+        "Flash",
+        "EEPROM",
+        "CPU Registers"
+      ],
+      "correctAnswer": "EEPROM",
+      "explanation": "ذاكرة EEPROM غير متطايرة وتسمح بالكتابة عليها من البرنامج، مما يجعلها مناسبة لتخزين الإعدادات التي يجب أن تستمر بعد انقطاع التيار."
+    },
+    {
+      "question": "What is the key advantage of the Harvard architecture used in AVR microcontrollers?",
+      "options": [
+        "It uses less memory overall",
+        "It allows simultaneous fetching of instructions and accessing data",
+        "It simplifies the CPU design",
+        "It uses a single shared bus for simplicity"
+      ],
+      "correctAnswer": "It allows simultaneous fetching of instructions and accessing data",
+      "explanation": "معمارية هارفارد، بفضل ناقلاتها المنفصلة للتعليمات والبيانات، تسمح للمعالج بالوصول إليهما في نفس الوقت، مما يزيد من سرعة الأداء."
+    },
+    {
+      "question": "A computer architecture that uses a single shared bus for both program instructions and data is known as:",
+      "options": [
+        "Harvard Architecture",
+        "RISC Architecture",
+        "Von Neumann Architecture",
+        "CISC Architecture"
+      ],
+      "correctAnswer": "Von Neumann Architecture",
+      "explanation": "معمارية فون نيومان تستخدم ناقلاً واحدًا مشتركًا وذاكرة واحدة لكل من التعليمات والبيانات."
+    },
+    {
+      "question": "Which AVR register is used to configure a specific pin on Port C as either an input or an output?",
+      "options": [
+        "PORTC",
+        "PINC",
+        "DDRC",
+        "TIMSK"
+      ],
+      "correctAnswer": "DDRC",
+      "explanation": "سجل اتجاه البيانات للمنفذ C (DDRC) هو الذي يحدد وظيفة كل دبوس في المنفذ C كمدخل أو مخرج."
+    },
+    {
+      "question": "Which AVR register should you read from to determine if a button connected to pin PA3 (configured as input) is currently pressed (assuming pressed = Low)?",
+      "options": [
+        "PORTA",
+        "DDRA",
+        "PINA",
+        "ADCA"
+      ],
+      "correctAnswer": "PINA",
+      "explanation": "لقراءة الحالة المنطقية الحالية لأرجل المنفذ A، يجب قراءة السجل PINA."
+    },
+    {
+      "question": "To turn on an LED connected to pin PD5 (configured as output), what should you do?",
+      "options": [
+        "Read from PIND",
+        "Set bit 5 of DDRD to 0",
+        "Set bit 5 of PORTD to 1",
+        "Set bit 5 of PIND to 1"
+      ],
+      "correctAnswer": "Set bit 5 of PORTD to 1",
+      "explanation": "لكتابة قيمة (لتشغيل LED مثلاً) إلى دبوس مخرج، يجب الكتابة إلى البت المقابل في سجل PORTx. القيمة '1' تعني عادةً حالة 'High'."
+    },
+    {
+      "question": "What C code snippet correctly sets all pins of Port B as outputs in AVR?",
+      "options": [
+        "PORTB = 0xFF;",
+        "PINB = 0xFF;",
+        "DDRB = 0xFF;",
+        "DDRB = 0x00;"
+      ],
+      "correctAnswer": "DDRB = 0xFF;",
+      "explanation": "لجعل جميع أرجل المنفذ B مخرجات، يجب ضبط جميع بتات سجل اتجاه البيانات DDRB إلى 1، وهو ما يعادل القيمة 0xFF بالست عشري."
+    },
+    {
+      "question": "Assuming Port A is configured as input, what C code snippet reads its value into a variable `val`?",
+      "options": [
+        "val = PORTA;",
+        "PORTA = val;",
+        "val = PINA;",
+        "PINA = val;"
+      ],
+      "correctAnswer": "val = PINA;",
+      "explanation": "لقراءة الحالة المنطقية لجميع أرجل المنفذ A المدخلة، يتم قراءة السجل PINA وتخزين قيمته في المتغير."
+    },
+    {
+      "question": "Assuming Port D is configured as output, what C code snippet writes the byte value `0xAA` (0b10101010) to it?",
+      "options": [
+        "DDRD = 0xAA;",
+        "PIND = 0xAA;",
+        "PORTD = 0xAA;",
+        "PORTD == 0xAA;"
+      ],
+      "correctAnswer": "PORTD = 0xAA;",
+      "explanation": "لكتابة قيمة إلى منفذ تم تكوينه كمخرج، يتم تعيين القيمة المطلوبة مباشرة إلى سجل PORTx."
+    },
+    {
+      "question": "What is the purpose of enabling the internal pull-up resistor on an AVR input pin (e.g., `PORTA |= (1 << PA0);` when `DDRA &= ~(1 << PA0);`)?",
+      "options": [
+        "To make the pin an output",
+        "To increase the input voltage range",
+        "To provide a default HIGH state and prevent floating",
+        "To decrease power consumption"
+      ],
+      "correctAnswer": "To provide a default HIGH state and prevent floating",
+      "explanation": "تفعيل مقاومة الرفع الداخلية يضمن أن يقرأ الدبوس كـ 'High' (1) عندما لا يكون مدفوعًا خارجيًا إلى 'Low' (0)، مما يمنع الحالة العائمة غير المحددة."
+    },
+    {
+      "question": "What problem does a pull-up resistor primarily solve for an input pin connected to a switch/button?",
+      "options": [
+        "It limits the current",
+        "It prevents the pin from floating when the switch is open",
+        "It increases the switching speed",
+        "It provides over-voltage protection"
+      ],
+      "correctAnswer": "It prevents the pin from floating when the switch is open",
+      "explanation": "بدون مقاومة الرفع، عندما يكون المفتاح مفتوحًا، يكون الدبوس 'عائمًا'. مقاومة الرفع تسحبه إلى حالة 'High' معروفة."
+    },
+    {
+      "question": "An input pin that is not connected to VCC or GND, and has its pull-up disabled, is said to be:",
+      "options": [
+        "Shorted",
+        "Pulled-down",
+        "Floating (Tri-stated)",
+        "Outputting High"
+      ],
+      "correctAnswer": "Floating (Tri-stated)",
+      "explanation": "الدبوس المدخل غير المتصل والذي لا يحتوي على مقاومة رفع أو سحب يكون في حالة عائمة (أو حالة المعاوقة العالية Tri-state)."
+    },
+    {
+      "question": "If multiple interrupts occur in an AVR microcontroller at the exact same time, which one is handled first?",
+      "options": [
+        "The one related to the lowest memory address",
+        "The one with the highest priority level",
+        "The external interrupt always takes precedence",
+        "They are handled randomly"
+      ],
+      "correctAnswer": "The one with the highest priority level",
+      "explanation": "تمتلك المقاطعات مستويات أولوية محددة مسبقًا. المتحكم الدقيق ينفذ روتين خدمة المقاطعة (ISR) ذي الأولوية الأعلى أولاً."
+    },
+    {
+      "question": "The AVR architecture, used in ATmega16, is primarily based on which design philosophy?",
+      "options": [
+        "CISC (Complex Instruction Set Computer)",
+        "RISC (Reduced Instruction Set Computer)",
+        "VLIW (Very Long Instruction Word)",
+        "Von Neumann"
+      ],
+      "correctAnswer": "RISC (Reduced Instruction Set Computer)",
+      "explanation": "معمارية AVR هي مثال على معمارية RISC، والتي تركز على مجموعة تعليمات بسيطة ومُحسَّنة."
+    },
+    {
+      "question": "Most general-purpose registers in the ATmega16 microcontroller are:",
+      "options": [
+        "4-bit wide",
+        "8-bit wide",
+        "16-bit wide",
+        "32-bit wide"
+      ],
+      "correctAnswer": "8-bit wide",
+      "explanation": "يعتبر ATmega16 متحكمًا دقيقًا 8 بت، مما يعني أن معظم سجلاته الداخلية وعملياته تتعامل مع البيانات بعرض 8 بت."
+    },
+    {
+      "question": "Approximately how many instructions can an ATmega16 running at 8 MHz execute in 1 millisecond (assuming most instructions take one clock cycle)?",
+      "options": [
+        "8 instructions",
+        "1000 instructions",
+        "8000 instructions",
+        "8,000,000 instructions"
+      ],
+      "correctAnswer": "8000 instructions",
+      "explanation": "يعمل المعالج بسرعة 8 مليون دورة في الثانية. إذا كانت معظم التعليمات تستغرق دورة واحدة، فيمكنه تنفيذ 8 مليون تعليمة في الثانية، أو 8000 تعليمة في الملي ثانية (8,000,000 / 1000)."
+    },
+    {
+      "question": "Which statement correctly describes the function of an AVR I/O register?",
+      "options": [
+        "PINx is used to set the pin direction.",
+        "PORTx is only used to read input values.",
+        "DDRx is used to enable/disable pull-ups.",
+        "DDRx sets the pin direction (Input/Output)."
+      ],
+      "correctAnswer": "DDRx sets the pin direction (Input/Output).",
+      "explanation": "الوظيفة الأساسية لسجل DDRx هي تحديد ما إذا كان كل دبوس في المنفذ المقابل سيعمل كمدخل أم مخرج."
+    },
+    {
+      "question": "How much EEPROM memory is available on the ATmega16 microcontroller?",
+      "options": [
+        "16 Bytes",
+        "1 KByte",
+        "16 KBytes",
+        "512 Bytes"
+      ],
+      "correctAnswer": "512 Bytes",
+      "explanation": "يحتوي متحكم ATmega16 على 512 بايت من ذاكرة EEPROM لتخزين البيانات غير المتطايرة."
+    }
+  ]
+}
